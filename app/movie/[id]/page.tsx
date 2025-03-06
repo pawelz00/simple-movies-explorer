@@ -4,12 +4,25 @@ import { notFound } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { getMovies } from "@/app/server/queries";
 
+export async function generateStaticParams() {
+  const movies = await getMovies();
+
+  if (!movies.data) {
+    return [];
+  }
+
+  return movies.data.map((movie) => ({
+    id: String(movie.id) ?? "",
+  }));
+}
+
 export default async function MoviePage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const [id, movies] = await Promise.all([params, getMovies()]);
+  const { id } = await params;
+  const movies = await getMovies();
   const movie = movies?.data?.find((movie) => movie.id === Number(id));
 
   if (!movie) {

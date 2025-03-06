@@ -15,12 +15,14 @@ const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 export async function getMovies(): Promise<IResponse<Movie[]>> {
   try {
     const [movies, genres] = await Promise.all([
-      fetch(`${BASE_URL}/movie/popular?language=en-US`, OPTIONS).then((res) =>
-        res.json(),
-      ),
-      fetch(`${BASE_URL}/genre/movie/list?language=en-US`, OPTIONS).then(
-        (res) => res.json(),
-      ),
+      fetch(`${BASE_URL}/movie/popular?language=en-US`, {
+        ...OPTIONS,
+        cache: "force-cache",
+      }).then((res) => res.json()),
+      fetch(`${BASE_URL}/genre/movie/list?language=en-US`, {
+        ...OPTIONS,
+        cache: "force-cache",
+      }).then((res) => res.json()),
     ]);
 
     const genresMap = genres.genres.reduce(
