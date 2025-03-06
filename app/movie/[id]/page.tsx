@@ -7,10 +7,10 @@ import { getMovies } from "@/app/server/queries";
 export default async function MoviePage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const movies = await getMovies();
-  const movie = movies?.data?.find((movie) => movie.id === Number(params.id));
+  const [id, movies] = await Promise.all([params, getMovies()]);
+  const movie = movies?.data?.find((movie) => movie.id === Number(id));
 
   if (!movie) {
     notFound();
