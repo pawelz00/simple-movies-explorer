@@ -1,6 +1,6 @@
 "use server";
 
-import { Movie, MovieFetch } from "@/app/types";
+import { IResponse, Movie, MovieFetch } from "@/app/types";
 
 const OPTIONS = {
   method: "GET",
@@ -12,7 +12,7 @@ const OPTIONS = {
 const BASE_URL = "https://api.themoviedb.org/3";
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 
-export async function getMovies(): Promise<Movie[] | undefined> {
+export async function getMovies(): Promise<IResponse<Movie[]>> {
   try {
     const [movies, genres] = await Promise.all([
       fetch(`${BASE_URL}/movie/popular?language=en-US`, OPTIONS).then((res) =>
@@ -34,19 +34,26 @@ export async function getMovies(): Promise<Movie[] | undefined> {
       {},
     );
 
-    return movies.results.map((movie: MovieFetch) => ({
-      id: movie.id,
-      title: movie.title,
-      vote_average: movie.vote_average,
-      release_date: movie.release_date,
-      overview: movie.overview,
-      poster_url: movie.poster_path
-        ? `${IMAGE_BASE_URL}${movie.poster_path}`
-        : null,
-      genres: movie.genre_ids.map((id: number) => genresMap[id]),
-    }));
+    return {
+      status: 200,
+      data: movies.results.map((movie: MovieFetch) => ({
+        id: movie.id,
+        title: movie.title,
+        vote_average: movie.vote_average,
+        release_date: movie.release_date,
+        overview: movie.overview,
+        poster_url: movie.poster_path
+          ? `${IMAGE_BASE_URL}${movie.poster_path}`
+          : null,
+        genres: movie.genre_ids.map((id: number) => genresMap[id]),
+      })),
+    };
   } catch (error) {
     console.error(error);
-    return undefined;
+    return {
+      status: 500,
+      isError: true,
+      error: `Internal Server Error - ${JSON.stringify(error)}`,
+    };
   }
 }

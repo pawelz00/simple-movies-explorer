@@ -8,7 +8,7 @@ interface MovieCardProps {
 
 export function MovieCard({ movie }: MovieCardProps) {
   return (
-    <Link href={`/${movie.id}`} className="block">
+    <Link href={`/movie/${movie.id}`} className="block">
       <div className="movie-card bg-card border rounded-xl overflow-hidden">
         <div className="relative aspect-auto">
           <Image

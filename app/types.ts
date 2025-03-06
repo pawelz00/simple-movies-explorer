@@ -23,3 +23,10 @@ export interface Movie {
   poster_url: string | null;
   genres: string[];
 }
+
+export interface IResponse<T> {
+  status: number;
+  data?: T;
+  isError?: boolean;
+  error?: string;
+}
