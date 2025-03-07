@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { getMovies } from "@/app/server/queries";
 import RatingCircle from "@/components/rating-circle";
+import Error from "@/components/error";
 
 export async function generateStaticParams() {
   const movies = await getMovies();
@@ -24,6 +25,11 @@ export default async function MoviePage({
 }) {
   const { id } = await params;
   const movies = await getMovies();
+
+  if (movies.isError || !movies.data) {
+    return <Error msg={movies.error} />;
+  }
+
   const movie = movies?.data?.find((movie) => movie.id === Number(id));
 
   if (!movie) {
