@@ -1,14 +1,12 @@
 import { getMovies } from "@/app/server/queries";
 import MoviesPage from "@/components/movies-page";
+import Error from "@/components/error";
 
 export default async function Home() {
   const response = await getMovies();
 
-  // TODO: Handle no content
-
   if (response.isError || !response.data) {
-    // TODO: Handle error
-    return <div>{response.error}</div>;
+    return <Error msg={response.error} />;
   }
 
   return <MoviesPage movies={response.data} />;

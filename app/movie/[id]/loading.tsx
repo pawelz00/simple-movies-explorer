@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function Loading() {
   return (
     <main className="container mx-auto px-4 py-8">
-      <Skeleton className={"w-12 h-8 mb-6"} />
+      <Skeleton className={"w-36 h-8 mb-6"} />
       <div className="grid md:grid-cols-2 gap-8 items-start">
         <Skeleton className="relative rounded-xl aspect-[2/3] max-h-[700px] overflow-hidden" />
 
