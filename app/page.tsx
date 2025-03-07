@@ -4,7 +4,10 @@ import MoviesPage from "@/components/movies-page";
 export default async function Home() {
   const response = await getMovies();
 
+  // TODO: Handle no content
+
   if (response.isError || !response.data) {
+    // TODO: Handle error
     return <div>{response.error}</div>;
   }
 

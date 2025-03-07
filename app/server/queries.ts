@@ -25,6 +25,14 @@ export async function getMovies(): Promise<IResponse<Movie[]>> {
       }).then((res) => res.json()),
     ]);
 
+    if (!movies.results) {
+      return {
+        status: 204,
+        isError: true,
+        error: "Movies not found",
+      };
+    }
+
     const genresMap = genres.genres.reduce(
       (
         acc: { [x: string]: any },
@@ -48,14 +56,14 @@ export async function getMovies(): Promise<IResponse<Movie[]>> {
           ? `${IMAGE_BASE_URL}${movie.poster_path}`
           : null,
         genres: movie.genre_ids.map((id: number) => genresMap[id]),
-      })),
+      })) as Movie[],
     };
   } catch (error) {
     console.error(error);
     return {
       status: 500,
       isError: true,
-      error: `Internal Server Error - ${JSON.stringify(error)}`,
+      error: `Error - ${JSON.stringify(error)}`,
     };
   }
 }

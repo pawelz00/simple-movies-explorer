@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { getMovies } from "@/app/server/queries";
+import RatingCircle from "@/components/rating-circle";
 
 export async function generateStaticParams() {
   const movies = await getMovies();
@@ -51,20 +52,27 @@ export default async function MoviePage({
           />
         </div>
 
-        <div className="space-y-6 fade-in">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <h1 className="text-3xl md:text-4xl font-bold">{movie.title}</h1>
+        <div className="space-y-6">
+          <div className={"flex justify-between items-center"}>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <h1 className="text-3xl md:text-4xl font-bold">
+                  {movie.title}
+                </h1>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {movie.genres.map((genre) => (
+                  <span
+                    key={genre}
+                    className="px-3 py-1 bg-secondary text-secondary-foreground text-sm rounded-full"
+                  >
+                    {genre}
+                  </span>
+                ))}
+              </div>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {movie.genres.map((genre) => (
-                <span
-                  key={genre}
-                  className="px-3 py-1 bg-secondary text-secondary-foreground text-sm rounded-full"
-                >
-                  {genre}
-                </span>
-              ))}
+            <div>
+              <RatingCircle rating={movie.vote_average.toFixed(1)} />
             </div>
           </div>
 
