@@ -28,7 +28,7 @@ export async function getMovies(): Promise<IResponse<Movie[]>> {
     const genresMap = genres.genres.reduce(
       (
         acc: { [x: string]: any },
-        genre: { id: string | number; name: any },
+        genre: { id: string | number; name: string },
       ) => {
         acc[genre.id] = genre.name;
         return acc;

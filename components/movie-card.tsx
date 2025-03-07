@@ -10,13 +10,13 @@ export function MovieCard({ movie }: MovieCardProps) {
   return (
     <Link href={`/movie/${movie.id}`} className="block">
       <div className="movie-card bg-card border rounded-xl overflow-hidden">
-        <div className="relative aspect-auto">
+        <div className="relative aspect-[2/3]">
           <Image
             src={movie.poster_url ?? ""}
             alt={movie.title}
             width={500}
             height={750}
-            className={"object-cover"}
+            className={"object-cover w-full"}
             sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
           />
         </div>
