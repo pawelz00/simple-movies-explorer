@@ -50,7 +50,11 @@ export default function MoviesPage({ movies }: MoviesPageProps) {
 
   return (
     <main className={"container mx-auto px-4 py-6"}>
-      <div className={"flex justify-between items-center gap-2 mb-6"}>
+      <div
+        className={
+          "flex flex-col sm:flex-row justify-between items-center gap-2 mb-6"
+        }
+      >
         <h1 className={"text-3xl font-bold"}>Popular Movies</h1>
         <div className={"flex gap-2 items-center"}>
           {(sort || filter) && (

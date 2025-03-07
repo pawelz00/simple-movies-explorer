@@ -3,13 +3,33 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
 import { getMovies } from "@/app/server/queries";
+import RatingCircle from "@/components/rating-circle";
+import Error from "@/components/error";
+
+export async function generateStaticParams() {
+  const movies = await getMovies();
+
+  if (!movies.data) {
+    return [];
+  }
+
+  return movies.data.map((movie) => ({
+    id: String(movie.id) ?? "",
+  }));
+}
 
 export default async function MoviePage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const [id, movies] = await Promise.all([params, getMovies()]);
+  const { id } = await params;
+  const movies = await getMovies();
+
+  if (movies.isError || !movies.data) {
+    return <Error msg={movies.error} />;
+  }
+
   const movie = movies?.data?.find((movie) => movie.id === Number(id));
 
   if (!movie) {
@@ -38,20 +58,27 @@ export default async function MoviePage({
           />
         </div>
 
-        <div className="space-y-6 fade-in">
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <h1 className="text-3xl md:text-4xl font-bold">{movie.title}</h1>
+        <div className="space-y-6">
+          <div className={"flex justify-between items-center"}>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <h1 className="text-3xl md:text-4xl font-bold">
+                  {movie.title}
+                </h1>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {movie.genres.map((genre) => (
+                  <span
+                    key={genre}
+                    className="px-3 py-1 bg-secondary text-secondary-foreground text-sm rounded-full"
+                  >
+                    {genre}
+                  </span>
+                ))}
+              </div>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {movie.genres.map((genre) => (
-                <span
-                  key={genre}
-                  className="px-3 py-1 bg-secondary text-secondary-foreground text-sm rounded-full"
-                >
-                  {genre}
-                </span>
-              ))}
+            <div>
+              <RatingCircle rating={movie.vote_average.toFixed(1)} />
             </div>
           </div>
 
@@ -62,11 +89,9 @@ export default async function MoviePage({
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 pt-4">
-            <div>
-              <h3 className="text-sm text-muted-foreground">Release Date</h3>
-              <p>{movie.release_date}</p>
-            </div>
+          <div>
+            <h3 className="text-sm text-muted-foreground">Release Date</h3>
+            <p>{movie.release_date}</p>
           </div>
         </div>
       </div>

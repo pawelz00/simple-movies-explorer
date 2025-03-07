@@ -15,18 +15,28 @@ const IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500";
 export async function getMovies(): Promise<IResponse<Movie[]>> {
   try {
     const [movies, genres] = await Promise.all([
-      fetch(`${BASE_URL}/movie/popular?language=en-US`, OPTIONS).then((res) =>
-        res.json(),
-      ),
-      fetch(`${BASE_URL}/genre/movie/list?language=en-US`, OPTIONS).then(
-        (res) => res.json(),
-      ),
+      fetch(`${BASE_URL}/movie/popular?language=en-US`, {
+        ...OPTIONS,
+        cache: "force-cache",
+      }).then((res) => res.json()),
+      fetch(`${BASE_URL}/genre/movie/list?language=en-US`, {
+        ...OPTIONS,
+        cache: "force-cache",
+      }).then((res) => res.json()),
     ]);
+
+    if (!movies.results) {
+      return {
+        status: 204,
+        isError: true,
+        error: "Movies not found",
+      };
+    }
 
     const genresMap = genres.genres.reduce(
       (
         acc: { [x: string]: any },
-        genre: { id: string | number; name: any },
+        genre: { id: string | number; name: string },
       ) => {
         acc[genre.id] = genre.name;
         return acc;
@@ -46,14 +56,14 @@ export async function getMovies(): Promise<IResponse<Movie[]>> {
           ? `${IMAGE_BASE_URL}${movie.poster_path}`
           : null,
         genres: movie.genre_ids.map((id: number) => genresMap[id]),
-      })),
+      })) as Movie[],
     };
   } catch (error) {
     console.error(error);
     return {
       status: 500,
       isError: true,
-      error: `Internal Server Error - ${JSON.stringify(error)}`,
+      error: `Error - ${JSON.stringify(error)}`,
     };
   }
 }
