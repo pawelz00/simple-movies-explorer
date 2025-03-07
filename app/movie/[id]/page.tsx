@@ -83,11 +83,9 @@ export default async function MoviePage({
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 pt-4">
-            <div>
-              <h3 className="text-sm text-muted-foreground">Release Date</h3>
-              <p>{movie.release_date}</p>
-            </div>
+          <div>
+            <h3 className="text-sm text-muted-foreground">Release Date</h3>
+            <p>{movie.release_date}</p>
           </div>
         </div>
       </div>
